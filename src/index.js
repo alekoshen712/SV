@@ -1,75 +1,10 @@
-let util = {
-  def (obj, key, value, enumerable) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: !!enumerable,
-      writable: true,
-      configurable: true
-    })
-  },
-  observe (value) {
-    let ob
-    if (value.hasOwnProperty('__ob__') && value.__ob__ instanceof Observer) {
-      ob = value.__ob__
-    } else {
-      ob = new Observer(value)
-    }
-    return ob
-  }
-}
-
-class Dep {
-  constructor () {
-    this.subs = []
-  }
-  depend () {
-
-  }
-  notify () {
-    this.subs.forEach(sub => sub())
-  }
-  addSub (sub) {
-    this.subs.push(sub);
-  }
-}
-
-class Observer {
-  constructor (value) {
-    this.value = value
-    this.dep = new Dep()
-    util.def(value, '__ob__', this)
-    this.walk(value)
-  }
-  walk (obj) {
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        defineReactive(obj, key, obj[key])
-      }
-    }
-  }
-}
-
-
-function defineReactive(obj, key, val) {
-  Object.defineProperty(obj, key, {
-    enumerable: true,
-    configurable: false,
-    get () {
-      obj.__ob__.dep.addSub(() => Dep.target.render())
-      return val
-    },
-    set (newVal) {
-      obj.__ob__.dep.notify()
-      val = newVal
-    }
-  })
-}
-
+import Observer from './Observer'
+import Watcher from "./Watcher";
 class SV {
   constructor (options) {
-    Dep.target = this
     this.$options = options
     this.init()
+    // this.render()
   }
 
   init () {
@@ -80,7 +15,7 @@ class SV {
   initData () {
     let data = this.$data = this.$options.data
     this.proxyData()
-    util.observe(data)
+    this.observer = new Observer(data)
   }
 
   proxyData () {
@@ -99,11 +34,10 @@ class SV {
   }
 
   render () {
-    setTimeout(() => {
-
-      let el = document.querySelector('#app')
-      el.innerHTML = this.$data.msg
-    }, 0)
+    new Watcher(() => {
+      // (this.a);
+      document.querySelector("#app").innerHTML = this.a
+    })
   }
 }
 
@@ -111,8 +45,11 @@ class SV {
 
 let vm = new SV({
   data: {
-    msg: 'hello SV'
+    a: 123
   }
-});
+})
+window.vm = vm
+
+
 
 
