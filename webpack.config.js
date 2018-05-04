@@ -13,9 +13,14 @@ module.exports = {
       use: {
         loader: "babel-loader",
         options: {
-          presets: ["env"]
+          presets: ["env"],
+          plugins: [
+            ["transform-react-jsx", {
+              pragma: "h"
+            }]
+          ]
         }
-      },
+      }
     }]
   },
   devServer: {

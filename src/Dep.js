@@ -14,6 +14,4 @@ class Dep {
   }
 }
 
-Dep.target = null
-
 export default Dep
