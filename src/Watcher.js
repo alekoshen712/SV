@@ -1,11 +1,27 @@
-import Dep from "./Dep"
+import Dep, {pushTarget, popTarget} from "./Dep"
 
 class Watcher {
-  constructor (fn) {
-    this.fn = fn
+  constructor (vm, fn) {
+    this.vm = vm
+    this.getter = fn
+    this.value = this.get()
   }
   notify () {
     setTimeout(this.fn, 0)
+  }
+  addDep (dep) {
+    dep.addSub(this)
+  }
+  get () {
+    let value
+    let vm = this.vm
+    pushTarget(this)
+    value = this.getter.call(vm, vm)
+    popTarget()
+    return value
+  }
+  update () {
+    setTimeout(this.getter, 0)
   }
 }
 
