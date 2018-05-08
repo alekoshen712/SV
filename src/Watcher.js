@@ -1,10 +1,11 @@
 import Dep, {pushTarget, popTarget} from "./Dep"
 
 class Watcher {
-  constructor (vm, fn) {
+  constructor (vm, fn, immediate = true) {
+    this.value = null
     this.vm = vm
     this.getter = fn
-    this.value = this.get()
+    if (immediate) this.value = this.get()
   }
   notify () {
     setTimeout(this.fn, 0)

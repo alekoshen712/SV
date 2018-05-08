@@ -1,15 +1,15 @@
 import Observer, {observe} from './Observer'
 import Watcher from './Watcher'
-import h from "./vdom/h"
-import diff from "./vdom/diff"
-import patch from "./vdom/patch"
-import createElement from "./vdom/createElement"
+import h from "./dom/h"
+import diff from "./dom/diff"
+import patch from "./dom/patch"
+import createElement from "./dom/createElement"
 import Dep from "./Dep";
 
 class SV {
   constructor (options) {
     this.$options = options
-    this._watchers = []
+    this.$methods = options.methods
     this.init()
     this.mount()
   }
@@ -17,6 +17,7 @@ class SV {
   init () {
     this.initData()
     this.initComputed()
+    this.initMethods()
     new Watcher(this, this.update.bind(this))
   }
   initData () {
@@ -27,7 +28,7 @@ class SV {
   initComputed () {
     let computed = this.$options.computed
     for (let k in computed) {
-      let watch = new Watcher(this, computed[k])
+      let watch = new Watcher(this, computed[k], false)
       Object.defineProperty(this, k, {
         configurable: true,
         enumerable: true,
@@ -35,6 +36,11 @@ class SV {
           return watch.get()
         }
       })
+    }
+  }
+  initMethods () {
+    for (let k in this.$methods) {
+      this[k] = this.$methods[k].bind(this)
     }
   }
   proxyData () {
@@ -55,9 +61,9 @@ class SV {
   update () {
     if (this._tree) {
       let newTree = this.$options.render.call(this)
-      var patches = diff(this._tree, newTree)
-      this._tree = newTree
-      this._rootNode = patch(this._rootNode, patches)
+      // var patches = diff(this._tree, newTree)
+      // this._tree = newTree
+      // this._rootNode = patch(this._rootNode, patches)
     } else {
       this._tree = this.$options.render.call(this)
       this._rootNode = createElement(this._tree)
@@ -81,12 +87,21 @@ window.vm1 = new SV({
       return this.a + this.b
     }
   },
+  methods: {
+    handleClick (e) {
+      console.log("handleClick")
+    },
+    consoleC (e) {
+      e.stopPropagation()
+      console.log(this.c)
+    }
+  },
   render () {
     return (
-      <div>
+      <div onClick={this.handleClick}>
         <i>{this.a}</i>
         <div>{this.b}</div>
-        <div>{this.c}</div>
+        <div onClick={this.consoleC}>{this.c}</div>
       </div>
     )
   }
