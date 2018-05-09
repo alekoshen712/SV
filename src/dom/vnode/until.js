@@ -1,6 +1,6 @@
 import VText from "./vtext";
 import VNode from "./vnode";
-import { EventType, EventMap } from "../event"
+import { EventType, EventMap } from "../types"
 export function isChild(x) {
   return isVNode(x) || isVText(x)
 }
@@ -20,7 +20,7 @@ function setAttribute(node, attrName, attrValue, vm) {
       EventMap[attrName],
       attrValue.bind(vm)
     )
-  target.setAttribute(attrName, attrValue);
+  node.setAttribute(attrName, attrValue);
 }
 
 export function setAttributes(node, attributes, vm) {
@@ -28,4 +28,3 @@ export function setAttributes(node, attributes, vm) {
   Object.keys(attributes)
     .forEach(attrName => setAttribute(node, attrName, attributes[attrName], vm));
 }
-

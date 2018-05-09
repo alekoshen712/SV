@@ -14,7 +14,15 @@ const EventMap = EventType.reduce((eventsMap, event) => {
   return eventsMap;
 }, {});
 
+const ChangeType = {
+  create : Symbol("create"),
+  update : Symbol("update"),
+  remove : Symbol("remove"),
+  replace: Symbol("replace")
+}
+
 export {
   EventType,
-  EventMap
+  EventMap,
+  ChangeType
 }

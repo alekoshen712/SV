@@ -5,7 +5,7 @@ class Watcher {
     this.value = null
     this.vm = vm
     this.getter = fn
-    if (immediate) this.value = this.get()
+    this.value = this.get()
   }
   notify () {
     setTimeout(this.fn, 0)

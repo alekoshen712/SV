@@ -61,9 +61,9 @@ class SV {
   update () {
     if (this._tree) {
       let newTree = this.$options.render.call(this)
-      // var patches = diff(this._tree, newTree)
-      // this._tree = newTree
-      // this._rootNode = patch(this._rootNode, patches)
+      let patches = diff(newTree, this._tree)
+      this._tree = newTree
+      this._rootNode = patch(this._rootNode, patches)
     } else {
       this._tree = this.$options.render.call(this)
       this._rootNode = createElement(this._tree)
@@ -99,8 +99,8 @@ window.vm1 = new SV({
   render () {
     return (
       <div onClick={this.handleClick}>
-        <i>{this.a}</i>
-        <div>{this.b}</div>
+        {/*<i className="font-red">{this.a}</i>*/}
+        {/*<div>{this.b}</div>*/}
         <div onClick={this.consoleC}>{this.c}</div>
       </div>
     )
