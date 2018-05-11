@@ -1,61 +1,19 @@
-import Observer, {observe} from './Observer'
 import Watcher from './Watcher'
 import h from "./dom/h"
 import diff from "./dom/diff"
 import patch from "./dom/patch"
 import createElement from "./dom/createElement"
-import Dep from "./Dep";
+
+import {noop} from "./core/utils";
+import {initData, initComputed, initMethods} from "./core/init"
 
 class SV {
   constructor (options) {
     this.$options = options
-    this.$methods = options.methods
-    this.init()
+    initData(this, options.data)
+    initComputed(this, options.computed)
+    initMethods(this, options.methods)
     this.mount()
-  }
-
-  init () {
-    this.initData()
-    this.initComputed()
-    this.initMethods()
-    new Watcher(this, this.update.bind(this))
-  }
-  initData () {
-    let data = this.$data = this.$options.data
-    this.proxyData()
-    observe(data)
-  }
-  initComputed () {
-    let computed = this.$options.computed
-    for (let k in computed) {
-      let watch = new Watcher(this, computed[k], false)
-      Object.defineProperty(this, k, {
-        configurable: true,
-        enumerable: true,
-        get () {
-          return watch.get()
-        }
-      })
-    }
-  }
-  initMethods () {
-    for (let k in this.$methods) {
-      this[k] = this.$methods[k].bind(this)
-    }
-  }
-  proxyData () {
-    Object.keys(this.$data).forEach(key => {
-      Object.defineProperty(this, key, {
-        configurable: true,
-        enumerable: true,
-        get () {
-          return this.$data[key]
-        },
-        set (val) {
-          this.$data[key] = val
-        }
-      })
-    })
   }
 
   update () {
@@ -70,6 +28,7 @@ class SV {
     }
   }
   mount () {
+    new Watcher(this, this.update.bind(this), noop, null, true)
     let el = document.querySelector(this.$options.el)
     el.appendChild(this._rootNode)
   }
@@ -79,8 +38,8 @@ class SV {
 window.vm1 = new SV({
   el: "#app1",
   data: {
-    a: "hello",
-    b: "world"
+    a: 10,
+    b: 10
   },
   computed: {
     c () {
@@ -93,7 +52,7 @@ window.vm1 = new SV({
     },
     consoleC (e) {
       e.stopPropagation()
-      console.log(this.c)
+      this.a = Math.floor(Math.random() * 20)
     }
   },
   render () {
@@ -106,3 +65,5 @@ window.vm1 = new SV({
     )
   }
 })
+
+console.log(vm1)

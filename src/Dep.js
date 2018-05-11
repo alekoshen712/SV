@@ -1,5 +1,8 @@
+let uid = 0
+
 class Dep {
   constructor () {
+    this.id = ++uid
     this.subs = []
   }
   notify () {
@@ -9,6 +12,10 @@ class Dep {
   }
   addSub (watcher) {
     this.subs.push(watcher)
+  }
+  removeSub (watcher) {
+    let idx = this.subs.indexOf(watcher)
+    this.subs.splice(idx, 1)
   }
   depend () {
     if (Dep.target) {

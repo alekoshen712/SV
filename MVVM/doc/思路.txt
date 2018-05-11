@@ -1,0 +1,117 @@
+mvvm并没有实现真正的model-view统一，当dom直接被修改时，model并没有被刷新
+
+谷歌实现了浏览器端的vdom，按照标准只有在一个task之后才进行dom的更新,vue vnode迟早被切割;
+实现真正的mvvm,并实现watch
+1,节点类型
+	EmptyVNode:空节点
+	TextVNode:文本节点
+	AttrVNode:属性节点
+	ElementVNode:普通元素节点
+	CloneVNode:克隆节点(保证和被克隆节点一致性)
+
+1,zepto.js
+
+一：如何编译template
+1,预编译
+2,更快的字符串相加方式:很多人误以为数组 push 方法拼接字符串会比 += 快，要知道这仅仅是 IE6-8 的浏览器下。实测表明现代浏览器使用 += 会比数组 push 方法快，而在 v8 引擎中，使用 += 方式比数组拼接快 4.7 倍。
+3,状态机,寻找分隔符
+<div>{{text}}</div>
+
+API:
+	new MVVM({
+		splitstart:"{{",
+		splitend:"}}",
+		Plugs:[fuc1,fuc2],
+		data:{
+			b:'123123',
+			c:Node('<span></span>')  
+			c:tempalte,
+			d:{
+				async:0,1,2,3//nexttick()，
+				template:'src'/element,
+				beforeMount:function(ele){ return false;(cancle)},
+				afterMounted:function(ele){},
+				watch:function(){}
+			},
+			e:{
+				watch:function(){};
+				tempalte:'123',
+			}
+		},
+		watch:{
+			a:function(){
+
+			}
+		}
+
+	})
+
+
+vm._plugs 插件
+vm._h
+
+vm._s tostring
+vm._l 为了for循环子元素
+vm.$data
+
+MVVM.dirctive
+
+cloak隐藏
+if 
+for
+	智能绑定echart等插件
+	只需要data项 data:setMVVM(vm,{a:1,b:2})
+	setMVVM=function(data){
+		1,设置data observer
+		2,mutationobserver
+		3,return {a:'{{vm.a}}',b:'{{vm.b}}'};
+	}
+
+
+	1,书写webpack node插件
+	2,m.log() //打印出当前文件行号，文件名
+
+binding: 一个对象，包含以下属性：
+	name: 指令名，不包括 v- 前缀。
+	value: 指令的绑定值， 例如： v-my-directive="1 + 1", value 的值是 2。
+	oldValue: 指令绑定的前一个值，仅在 update 和 componentUpdated 钩子中可用。无论值是否改变都可用。
+	expression: 绑定值的字符串形式。 例如 v-my-directive="1 + 1" ， expression 的值是 "1 + 1"。
+	arg: 传给指令的参数。例如 v-my-directive:foo， arg 的值是 "foo"。
+	modifiers: 一个包含修饰符的对象。 例如： v-my-directive.foo.bar, 修饰符对象 modifiers 的值是 { foo: true, bar: true }。
+
+	自定义指令(__update中调用,callHook)
+	//只调用一次，指令第一次绑定到元素时调用，用这个钩子函数可以定义一个在绑定时执行一次的初始化动作。
+	bind(el, binding, vnode,oldVnode) 
+	//: 被绑定元素插入父节点时调用（父节点存在即可调用，不必存在于 document 中）。
+	inserted(el, binding, vnode)
+	//被绑定元素所在的模板更新时调用，而不论绑定值是否变化。通过比较更新前后的绑定值，可以忽略不必要的模板更新（详细的钩子函数参数见下）
+	update (el, binding, vnode)//更新前
+	//被绑定元素所在模板完成一次更新周期时调用
+	componentUpdated//更新后
+	//只调用一次， 指令与元素解绑时调用
+	unbind
+
+	template2Vnode(currentparent)
+
+	vnode2render(el,s,h,l,vm?) return string
+
+
+pre	补丁程序开始	没有
+init	已添加一个vnode	vnode
+	bind create 已经基于vnode创建了一个DOM元素	 emptyVnode, vnode
+	inserted insert 一个元素已插入到DOM中 vnode
+
+
+pre	补丁程序开始	没有
+init	已添加一个vnode	vnode
+create	已经基于vnode创建了一个DOM元素	emptyVnode, vnode
+insert	一个元素已插入到DOM中	vnode
+prepatch	一个元素即将被修补	oldVnode, vnode
+update	一个元素正在更新	oldVnode, vnode
+postpatch	一个元素已被修补	oldVnode, vnode
+destroy	直接或间接地删除元素	vnode
+remove	一个元素直接从DOM中删除	vnode, removeCallback
+post	补丁过程完成	没有
+
+
+//万物皆插件

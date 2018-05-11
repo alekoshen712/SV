@@ -3,7 +3,7 @@ import Dep from "./Dep"
 function defineReactive(obj, key) {
   var dep = new Dep()
   var val = obj[key]
-  obj[key + "_dep_"] = dep
+  obj[`${key}__dep__`] = dep
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: false,
@@ -22,6 +22,7 @@ function defineReactive(obj, key) {
 
 class Observer {
   constructor (value) {
+    this.value = value
     this.walk(value)
   }
   walk (obj) {
