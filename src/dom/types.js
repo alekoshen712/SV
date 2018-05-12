@@ -10,15 +10,16 @@ const EventType = [
 ];
 
 const EventMap = EventType.reduce((eventsMap, event) => {
-  eventsMap[event] = event.replace('on', '').replace(/[A-Z]/g, e => e.toLowerCase());
-  return eventsMap;
-}, {});
+  eventsMap[event] = event.replace('on', '').replace(/[A-Z]/g, e => e.toLowerCase())
+  return eventsMap
+}, {})
 
 const ChangeType = {
   create : Symbol("create"),
   update : Symbol("update"),
   remove : Symbol("remove"),
-  replace: Symbol("replace")
+  replace: Symbol("replace"),
+  keep: Symbol("keep")
 }
 
 export {

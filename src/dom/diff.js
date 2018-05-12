@@ -1,6 +1,6 @@
 // import diff from "virtual-dom/diff"
 import { ChangeType } from "./types"
-import {isVNode, isVText} from "./vnode/until";
+import {isVNode, isVText} from "../utils";
 class PatchCommand {
   constructor (command) {
     this.type = command.type
@@ -25,11 +25,16 @@ function diffChildren(newNode, oldNode) {
   let commands = []
   for (let i = 0; i < Math.max(newChild.length, oldChild.length); i++) {
     let command = _diff(newChild[i], oldChild[i])
-    if (command) commands.push(command)
+    commands.push(command)
   }
-  return createPC({
+
+  let isUpdate = commands.some(command => command.type !== ChangeType.keep)
+
+  return isUpdate ? createPC({
     type: ChangeType.update,
     children: commands
+  }) : createPC({
+    type: ChangeType.keep
   })
 }
 
@@ -39,6 +44,8 @@ function _diff(newNode, oldNode) {
   else if (isChanged(newNode, oldNode)) return createPC({type: ChangeType.replace, node: newNode })
   else if (isVNode(newNode) && isVNode(oldNode)) {
     return diffChildren(newNode, oldNode)
+  } else {
+    return  createPC({type: ChangeType.keep})
   }
 }
 

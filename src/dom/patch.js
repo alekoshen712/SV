@@ -1,12 +1,10 @@
-import patch from "virtual-dom/patch"
 import { ChangeType} from "./types"
 import createElement from "./createElement"
-import { isVText, isVNode } from "./vnode/until";
+import { isVText, isVNode } from "../utils";
 
-function _patch(parent, command, idx = 0, vm) {
+function patch(parent, command, idx = 0, vm) {
   if (!command) return;
   const el = parent.childNodes[idx];
-
   switch (command.type) {
     case ChangeType.create: {
       const { node } = command;
@@ -33,13 +31,16 @@ function _patch(parent, command, idx = 0, vm) {
       break;
     }
     case ChangeType.update: {
-      const { children } = command;
-      // patchAttributes(el, attributes);
-      children.forEach((child, index) => _patch(el, child, index, vm));
+      const { children } = command
+      children.forEach((child, index) => {
+        // console.log(index)
+        let el =  parent.childNodes[index]
+        patch(el, child, index, vm)
+      })
       break;
     }
   }
   return parent
 }
 
-export default _patch
+export default patch
