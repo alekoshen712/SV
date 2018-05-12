@@ -1,6 +1,6 @@
 import VNode from "./vnode/vnode"
 import VText from "./vnode/vtext"
-import { isChild } from "./vnode/until"
+import { isChild } from "../utils"
 
 function h(tagName, propertis, ...childrens) {
   let childNodes = []

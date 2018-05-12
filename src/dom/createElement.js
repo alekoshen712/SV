@@ -1,4 +1,4 @@
-import {isVText, isVNode, setAttributes} from "./vnode/until";
+import {isVText, isVNode, setAttributes} from "../utils";
 
 function createElement(vnode, vm) {
 

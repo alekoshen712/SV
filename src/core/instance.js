@@ -1,7 +1,7 @@
-import { noop, isFunction } from "./utils"
-import {observe} from "../Observer"
-import Watcher from "../Watcher"
-import Dep from "../Dep";
+import { noop, isFunction } from "../utils"
+import {observe} from "./Observer"
+import Watcher from "./Watcher"
+import Dep from "./Dep";
 
 const sharedPropertyDefinition = {
   enumerable: true,
